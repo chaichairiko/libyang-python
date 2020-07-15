@@ -726,6 +726,7 @@ class SNode:
     RPC = lib.LYS_RPC
     INPUT = lib.LYS_INPUT
     OUTPUT = lib.LYS_OUTPUT
+    ACTION = lib.LYS_ACTION
     KEYWORDS = {
         CONTAINER: "container",
         LEAF: "leaf",
@@ -734,6 +735,7 @@ class SNode:
         RPC: "rpc",
         INPUT: "input",
         OUTPUT: "output",
+        ACTION: "action"
     }
 
     def __init__(self, context: "libyang.Context", cdata):
@@ -1044,6 +1046,10 @@ class SRpc(SNode):
     def children(self, types: Optional[Tuple[int, ...]] = None) -> Iterator[SNode]:
         return iter_children(self.context, self.cdata, types=types)
 
+
+@SNode.register(SNode.ACTION)
+class SAction(SRpc):
+    pass
 
 # -------------------------------------------------------------------------------------
 def iter_children(

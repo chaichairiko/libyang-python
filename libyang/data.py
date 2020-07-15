@@ -5,7 +5,8 @@ import logging
 from typing import IO, Any, Dict, Iterator, Optional, Union
 
 from _libyang import ffi, lib
-from .schema import Module, SContainer, SLeaf, SLeafList, SList, SNode, SRpc, Type
+from .schema import Module, SContainer, SLeaf, SLeafList, SList, SNode, SRpc, Type,\
+    SAction
 from .util import LibyangError, c2str, deprecated, str2c
 
 
@@ -638,7 +639,7 @@ def dict_to_dnode(
         snode, module = schema_cache.get(cache_key, (None, None))
         if snode is not None:
             return snode, module
-        if isinstance(schema_parent, SRpc):
+        if isinstance(schema_parent, (SRpc, SAction)):
             if rpc:
                 schema_parent = schema_parent.input()
             elif rpcreply:
@@ -711,7 +712,7 @@ def dict_to_dnode(
                 for v in value:
                     _create_leaf(_parent, module, name, v, in_rpc_output)
 
-            elif isinstance(s, SRpc):
+            elif isinstance(s, (SRpc, SAction)):
                 n = _create_container(_parent, module, name, in_rpc_output)
                 _to_dnode(value, s, n, rpcreply)
 
